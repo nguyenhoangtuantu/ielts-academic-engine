@@ -13,12 +13,12 @@
  */
 
 export interface DiffChunk {
-  type: 'equal' | 'delete' | 'insert';
+  type: "equal" | "delete" | "insert";
   value: string;
 }
 
 interface RawEdit {
-  type: 'equal' | 'delete' | 'insert';
+  type: "equal" | "delete" | "insert";
   valA: string;
   valB: string;
 }
@@ -44,7 +44,7 @@ function backtrackMyers(
   b: string[],
   d: number,
   k: number,
-  max: number
+  max: number,
 ): RawEdit[] {
   let x = a.length;
   let y = b.length;
@@ -54,7 +54,10 @@ function backtrackMyers(
     const vPrev = trace[step];
     let prevK: number;
 
-    if (k === -step || (k !== step && vPrev[max + k - 1] < vPrev[max + k + 1])) {
+    if (
+      k === -step ||
+      (k !== step && vPrev[max + k - 1] < vPrev[max + k + 1])
+    ) {
       prevK = k + 1;
     } else {
       prevK = k - 1;
@@ -78,14 +81,14 @@ function backtrackMyers(
 
     // Snake part: diagonal matches between mid point and (x, y)
     for (let i = x - 1, j = y - 1; i >= midX && j >= midY; i--, j--) {
-      raw.unshift({ type: 'equal', valA: a[i], valB: b[j] });
+      raw.unshift({ type: "equal", valA: a[i], valB: b[j] });
     }
 
     // The edit step itself
     if (prevK === k + 1) {
-      raw.unshift({ type: 'insert', valA: '', valB: b[prevY] });
+      raw.unshift({ type: "insert", valA: "", valB: b[prevY] });
     } else {
-      raw.unshift({ type: 'delete', valA: a[prevX], valB: '' });
+      raw.unshift({ type: "delete", valA: a[prevX], valB: "" });
     }
 
     x = prevX;
@@ -95,7 +98,7 @@ function backtrackMyers(
 
   // Initial snake from (0, 0) to starting point of step 1
   for (let i = x - 1, j = y - 1; i >= 0 && j >= 0; i--, j--) {
-    raw.unshift({ type: 'equal', valA: a[i], valB: b[j] });
+    raw.unshift({ type: "equal", valA: a[i], valB: b[j] });
   }
 
   return raw;
@@ -108,18 +111,21 @@ function backtrackMyers(
  * @param revised The academic revised sentence (Band 6.5 or Band 7.5+).
  * @returns An array of consolidated DiffChunk objects.
  */
-export function computeWordDiff(original: string, revised: string): DiffChunk[] {
+export function computeWordDiff(
+  original: string,
+  revised: string,
+): DiffChunk[] {
   // Fast path: exact match
   if (original === revised) {
-    return original ? [{ type: 'equal', value: original }] : [];
+    return original ? [{ type: "equal", value: original }] : [];
   }
   // Fast path: complete insertion
   if (!original) {
-    return revised ? [{ type: 'insert', value: revised }] : [];
+    return revised ? [{ type: "insert", value: revised }] : [];
   }
   // Fast path: complete deletion
   if (!revised) {
-    return original ? [{ type: 'delete', value: original }] : [];
+    return original ? [{ type: "delete", value: original }] : [];
   }
 
   const a = tokenize(original);
@@ -169,9 +175,9 @@ function consolidateChunks(raw: RawEdit[]): DiffChunk[] {
   const chunks: DiffChunk[] = [];
 
   for (const item of raw) {
-    if (item.type === 'equal') {
+    if (item.type === "equal") {
       if (item.valA === item.valB) {
-        chunks.push({ type: 'equal', value: item.valA });
+        chunks.push({ type: "equal", value: item.valA });
       } else {
         const trimA = item.valA.trimEnd();
         const trimB = item.valB.trimEnd();
@@ -179,23 +185,23 @@ function consolidateChunks(raw: RawEdit[]): DiffChunk[] {
         const wsB = item.valB.slice(trimB.length);
 
         if (wsA === wsB) {
-          chunks.push({ type: 'equal', value: item.valA });
+          chunks.push({ type: "equal", value: item.valA });
         } else if (wsA.length > wsB.length) {
           // Extra whitespace in original was deleted in revised
           const extraWs = wsA.slice(wsB.length);
-          chunks.push({ type: 'equal', value: item.valB });
-          chunks.push({ type: 'delete', value: extraWs });
+          chunks.push({ type: "equal", value: item.valB });
+          chunks.push({ type: "delete", value: extraWs });
         } else {
           // Extra whitespace in revised was inserted
           const extraWs = wsB.slice(wsA.length);
-          chunks.push({ type: 'equal', value: item.valA });
-          chunks.push({ type: 'insert', value: extraWs });
+          chunks.push({ type: "equal", value: item.valA });
+          chunks.push({ type: "insert", value: extraWs });
         }
       }
-    } else if (item.type === 'delete') {
-      chunks.push({ type: 'delete', value: item.valA });
+    } else if (item.type === "delete") {
+      chunks.push({ type: "delete", value: item.valA });
     } else {
-      chunks.push({ type: 'insert', value: item.valB });
+      chunks.push({ type: "insert", value: item.valB });
     }
   }
 
