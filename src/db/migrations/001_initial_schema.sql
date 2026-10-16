@@ -52,7 +52,7 @@ CREATE TABLE IF NOT EXISTS mistakes (
   blank_phrase TEXT NOT NULL,
   corrected_phrase TEXT NOT NULL,
   error_tag TEXT NOT NULL,
-  interval INTEGER NOT NULL DEFAULT 1 CHECK (interval >= 1),
+  interval INTEGER NOT NULL DEFAULT 0 CHECK (interval >= 0),
   efactor NUMERIC(4, 2) NOT NULL DEFAULT 2.50 CHECK (efactor >= 1.30),
   repetitions INTEGER NOT NULL DEFAULT 0 CHECK (repetitions >= 0),
   due_date TIMESTAMPTZ NOT NULL DEFAULT timezone('utc'::text, now()),
