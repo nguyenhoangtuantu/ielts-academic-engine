@@ -1,3 +1,5 @@
+'use client';
+
 import React, { useState, useRef, useEffect } from 'react';
 import { DiffSentenceRow, DiffChunk } from './DiffSentenceRow';
 import { computeWordDiff } from '../../core/diff/myersDiff';
