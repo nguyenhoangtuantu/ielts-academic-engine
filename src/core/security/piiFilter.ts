@@ -63,7 +63,14 @@ export function sanitizeAndMaskPII(text: string): SanitizedPIIResult {
     return '[PHONE]';
   });
 
-  // 4. Neutralize dangerous javascript: pseudo-protocols
+  // 4. Mask student self-identification names (e.g., "My name is John Doe", "Tôi tên là Nguyen Van A")
+  const NAME_INTRO_REGEX = /\b(my name is|i am|tôi tên là|tên tôi là)\s+([A-ZÀ-Ỹ][a-zà-ỹ]+(?:\s+[A-ZÀ-Ỹ][a-zà-ỹ]+)+)\b/gi;
+  clean = clean.replace(NAME_INTRO_REGEX, (_match, prefix) => {
+    hasPII = true;
+    return `${prefix} [STUDENT_NAME]`;
+  });
+
+  // 5. Neutralize dangerous javascript: pseudo-protocols
   clean = clean.replace(/javascript\s*:/gi, '[BLOCKED_URI]');
 
   // 5. Escape HTML angle brackets to completely neutralize any XSS markup

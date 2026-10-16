@@ -118,7 +118,17 @@ describe('sanitizeAndMaskPII', () => {
   });
 });
 
-describe('generateSlug', () => {
+describe('student name intro masking', () => {
+  it('masks self-identifying student names in essays', () => {
+    const input = "Hello, my name is Nguyen Hoang Tuan and I wrote this essay.";
+    const { cleanText, hasPII } = sanitizeAndMaskPII(input);
+    expect(cleanText).toContain("my name is [STUDENT_NAME]");
+    expect(cleanText).not.toContain("Nguyen Hoang Tuan");
+    expect(hasPII).toBe(true);
+  });
+});
+
+describe('slug generation', () => {
   it('converts titles to clean kebab-case URL slugs', () => {
     const title = "The Impact of Artificial Intelligence on Modern Education";
     expect(generateSlug(title)).toBe("the-impact-of-artificial-intelligence-on-modern-education");
