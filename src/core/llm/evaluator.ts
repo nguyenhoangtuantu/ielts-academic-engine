@@ -14,9 +14,11 @@ import { buildEvaluationMessages } from './prompts';
 export {
   SentenceFeedbackSchema,
   EssayEvaluationSchema,
+  ValidationError,
+};
+export type {
   SentenceFeedback,
   EssayEvaluation,
-  ValidationError,
 };
 
 export interface EvaluateOptions {
