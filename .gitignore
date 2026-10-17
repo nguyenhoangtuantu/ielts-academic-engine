@@ -1,6 +1,10 @@
 node_modules/
 dist/
 coverage/
+.next/
+out/
+build/
+.superpowers/
 .env
 .env.*
 !.env.example
